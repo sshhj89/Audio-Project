@@ -82,6 +82,9 @@ void setup() {
   musicPlayer.startPlayingFile("sample3.mp3");
 
 */
+
+
+//this is a while condition I made to check though each indivual song to check while it hasn't finished
   int count = 0;
   
   while (count < 3){
@@ -91,7 +94,7 @@ void setup() {
     musicPlayer.startPlayingFile(files[count]);
     
     while (! musicPlayer.stopped()){
-    loop();
+    loop();//proceeds with the interrupt portion
     }
     count ++ ;
     
@@ -106,7 +109,7 @@ void loop() {
     while (1);
   }
   
-  // else{
+  
    
     
     
@@ -129,6 +132,6 @@ void loop() {
       }
     }
   }
- //}
+ 
   delay(100);
 }
