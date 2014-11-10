@@ -90,16 +90,14 @@ void setup() {
   while (count < 3){
     
     Serial.print("Playing ");
-    Serial.println(names[count]);
+    Serial.println(names[count]); //any reason this can't just print the files arr? Do we need names[] to exist? 
     musicPlayer.startPlayingFile(files[count]);
     
     while (! musicPlayer.stopped()){
-    loop();//proceeds with the interrupt portion
+      loop();//proceeds with the interrupt portion
     }
     count ++ ;
-    
   }
-
 }
 
 void loop() {
