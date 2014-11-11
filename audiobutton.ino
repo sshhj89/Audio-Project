@@ -46,7 +46,9 @@ Adafruit_VS1053_FilePlayer musicPlayer =
  //initial setup of pins (buttons)
  int inputPin1 = 2;     
  int inputPin2 = 3;
- boolean buttonPressed = false;//boolean testing for one of the buttons
+ 
+ boolean buttonPressed1 = false;
+ boolean buttonPressed2 = false;//boolean testing 
    
   char *names[3]={"sample 1", "sample 2", "sample 3"};
   char *files[3]={"sample1.mp3", "sample2.mp3", "sample3.mp3"};
@@ -79,6 +81,9 @@ void setup() {
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
   
 
+  
+  
+  
   int count = 0;
   
   while (count < 3){
@@ -86,33 +91,54 @@ void setup() {
     Serial.print("Playing ");
     Serial.println(names[count]);
     musicPlayer.startPlayingFile(files[count]);
+    count ++ ;
+    Serial.println(count);
+    
+    
+     
+   
     
     while (! musicPlayer.stopped()){
     loop();
     }
-    count ++ ;
     
   }
-
+ 
 }
 
 //button calling
 void loop() {
   // File is playing in the background
+
+  
   if (musicPlayer.stopped()) {
     Serial.println("Done playing music");
     while (1);
   }
   
   
-  if (Serial.available()) {
+ //if (Serial.available()) {
    
-    if (buttonPressed) {
-      musicPlayer.stopPlaying();
-      while (1);
+    //Serial.println(digitalRead(inputPin1));
+    Serial.println(digitalRead(inputPin2));
+    
+     if (digitalRead(inputPin1) == LOW){
+     buttonPressed1 = true;
+   }
+   
+    if(digitalRead(inputPin2) == HIGH){
+      buttonPressed2 = true;
+      Serial.println("Button Pressed"); 
     }
     
-    if (digitalRead(inputPin1) == LOW) {
+    if (buttonPressed2) {
+      musicPlayer.stopPlaying();
+      buttonPressed2 = false;
+      
+    }
+ 
+    
+    if (buttonPressed1) {
       if (! musicPlayer.paused()) {
         Serial.println("Paused");
         musicPlayer.pausePlaying(true);
@@ -120,10 +146,12 @@ void loop() {
         Serial.println("Resumed");
         musicPlayer.pausePlaying(false);
       }
+      buttonPressed1 = false;
     }
-  }
-    if(digitalRead(inputPin2) == HIGH){
-      buttonPressed = true;
-    }
+ // }
+   
+  
+    
+  
   delay(100);
 }
