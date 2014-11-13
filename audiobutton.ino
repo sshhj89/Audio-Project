@@ -44,7 +44,7 @@ Adafruit_VS1053_FilePlayer musicPlayer =
   Adafruit_VS1053_FilePlayer(SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
  
  //initial setup of pins (buttons)
- int inputPin1 = 2;     
+ int inputPin1 = 2; //!!!!!!!reassign the pins here to test out the pause/play and stop functions     
  int inputPin2 = 3;
  
  boolean buttonPressed1 = false;
@@ -80,9 +80,6 @@ void setup() {
   // audio playing
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
   
-
-  
-  
   
   int count = 0;
   
@@ -93,10 +90,6 @@ void setup() {
     musicPlayer.startPlayingFile(files[count]);
     count ++ ;
     Serial.println(count);
-    
-    
-     
-   
     
     while (! musicPlayer.stopped()){
     loop();
@@ -119,35 +112,40 @@ void loop() {
   
  //if (Serial.available()) {
    
-    //Serial.println(digitalRead(inputPin1));
-    Serial.println(digitalRead(inputPin2));
+    Serial.print("Button1 input ");
+    Serial.println( digitalRead(inputPin1));
+    Serial.print("Button2 input ");
+    Serial.println( digitalRead(inputPin2));
     
-     if (digitalRead(inputPin1) == LOW){
+     if (digitalRead(inputPin1) == HIGH){
      buttonPressed1 = true;
+     Serial.println("Button 1 Pressed");
    }
    
     if(digitalRead(inputPin2) == HIGH){
       buttonPressed2 = true;
-      Serial.println("Button Pressed"); 
+      Serial.println("Button 2 Pressed"); 
     }
     
     if (buttonPressed2) {
+      delay(500);// delay is used as a fail safe to prevent rapid button input when held down.
+      Serial.println("Track Stopped");
       musicPlayer.stopPlaying();
       buttonPressed2 = false;
-      
     }
  
-    
-    if (buttonPressed1) {
-      if (! musicPlayer.paused()) {
+    if (buttonPressed1){
         Serial.println("Paused");
-        musicPlayer.pausePlaying(true);
-      } else  { 
+        musicPlayer.pausePlaying(true); 
+         delay(300);         
+        while (!digitalRead(inputPin1)){ // while input pin is LOW stay on pause
+        }
+         delay(300);
         Serial.println("Resumed");
         musicPlayer.pausePlaying(false);
+        buttonPressed1 = false;
       }
-      buttonPressed1 = false;
-    }
+    
  // }
    
   
