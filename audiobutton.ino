@@ -44,8 +44,14 @@ Adafruit_VS1053_FilePlayer musicPlayer =
 Adafruit_VS1053_FilePlayer(SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
 
 //initial setup of pins (buttons)
-int inputPin1 = 2; //!!!!!!!reassign the pins here to test out the pause/play and stop functions     
-int inputPin2 = 3;
+int inputPin1 = 3; //!!!!!!!reassign the pins here to test out the pause/play and stop functions     
+int inputPin2 = 2;
+//Swapping these pins to 3, 2 results in:
+    //btn1: brief pause
+    //btn2: fast forward
+
+
+int count = 0;
 
 boolean buttonPressed1 = false;
 boolean buttonPressed2 = false;//boolean testing 
@@ -79,8 +85,6 @@ void setup() {
     // audio playing
     musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
 
-    int count = 0;
-
     while (count < 3){
 
         Serial.print("Playing ");
@@ -99,17 +103,14 @@ void setup() {
 void loop() {
     // File is playing in the background
 
-
     if (musicPlayer.stopped()) {
         Serial.println("Done playing music");
         while (1);
     }
 
-    //if (Serial.available()) {
-
-    Serial.print("Button1 input ");
+    Serial.print("Button1 input: ");
     Serial.println( digitalRead(inputPin1));
-    Serial.print("Button2 input ");
+    Serial.print("Button2 input: ");
     Serial.println( digitalRead(inputPin2));
 
     if (digitalRead(inputPin1) == HIGH){
@@ -117,17 +118,42 @@ void loop() {
         Serial.println("Button 1 Pressed");
     }
 
-    if(digitalRead(inputPin2) == HIGH){ 
+    if(digitalRead(inputPin2) == HIGH){  //This doesn't appear to trigger
         buttonPressed2 = true;
         Serial.println("Button 2 Pressed"); 
     }
 
+    /**TESTING Debounce
+    int btnRead;
+    btnRead = digitalRead(inputPin2);
+    int btn2State = LOW;
+    int lastBtn2State = LOW;
+    long lastDebounceTime = 0;
+    long debounceDelay = 200;  
+
+    if (btnRead != lastBtn2State){
+        lastDebounceTime = millis();
+        Serial.println("lastDebounceTime: ");
+        Serial.println(lastDebounceTime);
+    }
+    if ((millis() - lastDebounceTime) > debounceDelay){
+        btn2State = btnRead;
+        Serial.println("Button 2 Pressed");
+        lastDebounceTime = millis();
+        buttonPressed2 = true;
+    }
+    lastBtn2State = btnRead;
+**/
+
+
+
+
     if (buttonPressed2) { //This doesn't appear to trigger
-        Serial.println("Looks like you've pressed button 2");
         delay(500);// delay is used as a fail safe to prevent rapid button input when held down.
         Serial.println("Track Stopped");
         // musicPlayer.stopPlaying();
         musicPlayer.pausePlaying(true); //instead of stopPlaying, let's call pause and then start playing next file
+        count++;
         
         buttonPressed2 = false;
     }
@@ -137,7 +163,7 @@ void loop() {
         musicPlayer.pausePlaying(true); 
         delay(300);         
         while (!digitalRead(inputPin1)){ // while input pin is LOW stay on pause
-    }
+        }
     delay(300);
     Serial.println("Resumed");
     musicPlayer.pausePlaying(false);
