@@ -1,16 +1,16 @@
 /*************************************************** 
-This is an example for the Adafruit VS1053 Codec Breakout
+  This is an example for the Adafruit VS1053 Codec Breakout
 
-Designed specifically to work with the Adafruit VS1053 Codec Breakout 
-----> https://www.adafruit.com/products/1381
+  Designed specifically to work with the Adafruit VS1053 Codec Breakout 
+  ----> https://www.adafruit.com/products/1381
 
-Adafruit invests time and resources providing this open source code, 
-please support Adafruit and open-source hardware by purchasing 
-products from Adafruit!
+  Adafruit invests time and resources providing this open source code, 
+  please support Adafruit and open-source hardware by purchasing 
+  products from Adafruit!
 
-Written by Limor Fried/Ladyada for Adafruit Industries.  
-BSD license, all text above must be included in any redistribution
-****************************************************/
+  Written by Limor Fried/Ladyada for Adafruit Industries.  
+  BSD license, all text above must be included in any redistribution
+ ****************************************************/
 
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
@@ -44,29 +44,26 @@ Adafruit_VS1053_FilePlayer musicPlayer =
 Adafruit_VS1053_FilePlayer(SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
 
 //initial setup of pins (buttons)
-int inputPin1 = 2; //!!!!!!!reassign the pins here to test out the pause/play and stop functions     
+int inputPin1 = 2;     
 int inputPin2 = 3;
-
-boolean buttonPressed1 = false;
-boolean buttonPressed2 = false;//boolean testing 
+boolean buttonPressed = false;//boolean testing for one of the buttons
 
 // char *names[3]={"sample 1", "sample 2", "sample 3"};
 char *files[3]={"sample1.mp3", "sample2.mp3", "sample3.mp3"};
-
+  
+  
 void setup() {
-
     pinMode(inputPin1, INPUT);//pin mode setup for both buttons  
     pinMode(inputPin2, INPUT);
 
     Serial.begin(9600);
-    Serial.println("Adafruit VS1053 Simple Test");
+    Serial.println("Adafruit VS1053 Audio Player");
 
     if (! musicPlayer.begin()) { // initialise the music player
         Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
         while (1);
     }
     Serial.println(F("VS1053 found"));
-
     SD.begin(CARDCS);    // initialise the SD card
 
     // Set volume for left, right channels. lower numbers == louder volume!
@@ -79,70 +76,87 @@ void setup() {
     // audio playing
     musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
 
-    int count = 0;
 
-    while (count < 3){
 
-        Serial.print("Playing ");
-        Serial.println(files[count]);
-        musicPlayer.startPlayingFile(files[count]);
-        count ++ ;
-        Serial.println(count);
+    // int count = 0;
 
-        while (!musicPlayer.stopped()){
-            loop();
-        }
-    }
+    // while (count < 3){
+
+    //     Serial.print("Playing ");
+    //     Serial.println(files[count]);
+        // musicPlayer.startPlayingFile(files[count]);
+
+    //     while (! musicPlayer.stopped()){
+    //         loop();
+    //     }
+    // count ++ ;
+    // }
 }
 
 //button calling
 void loop() {
     // File is playing in the background
-
-
     if (musicPlayer.stopped()) {
         Serial.println("Done playing music");
         while (1);
     }
 
-    //if (Serial.available()) {
-
-    Serial.print("Button1 input ");
-    Serial.println( digitalRead(inputPin1));
-    Serial.print("Button2 input ");
-    Serial.println( digitalRead(inputPin2));
-
-    if (digitalRead(inputPin1) == HIGH){
-        buttonPressed1 = true;
+    if(digitalRead(inputPin1) == HIGH){
         Serial.println("Button 1 Pressed");
+        buttonPressed = true;
     }
+    
+    if(Serial.available()) {
+        if(buttonPressed){
+            if(!musicPlayer.paused()){
+                Serial.println("Pausing...");
+                musicPlayer.pausePlaying(true);
+            }
+            else if(musicPlayer.paused()){
+                Serial.println("Resuming...");
+                musicPlayer.pausePlaying(false);
+            }
+        }
+    }
+    //State:
+        //Playing
+            //musicPlayer.playingMusic()
+            //button 1 pressed: pause
+            //button 2 pressed: stop
+        //Paused
+            //musicPlayer.paused()
+            //button 1 pressed: play
+            //button 2 pressed: stop
+        //Stopped
+            //musicPlayer.stopped();
+            //button 1 pressed: play
+            //button 2 pressed: next file
 
-    if(digitalRead(inputPin2) == HIGH){ 
-        buttonPressed2 = true;
-        Serial.println("Button 2 Pressed"); 
-    }
 
-    if (buttonPressed2) { //This doesn't appear to trigger
-        Serial.println("Looks like you've pressed button 2");
-        delay(500);// delay is used as a fail safe to prevent rapid button input when held down.
-        Serial.println("Track Stopped");
-        // musicPlayer.stopPlaying();
-        musicPlayer.pausePlaying(true); //instead of stopPlaying, let's call pause and then start playing next file
-        
-        buttonPressed2 = false;
-    }
 
-    if (buttonPressed1){
-        Serial.println("Paused");
-        musicPlayer.pausePlaying(true); 
-        delay(300);         
-        while (!digitalRead(inputPin1)){ // while input pin is LOW stay on pause
-    }
-    delay(300);
-    Serial.println("Resumed");
-    musicPlayer.pausePlaying(false);
-    buttonPressed1 = false;
-    }
-// }
-delay(100);
+
+    // if (Serial.available()) {
+
+    //     if (buttonPressed) {
+    //         musicPlayer.stopPlaying();
+    //         while (1);
+    //     }
+
+    //     if (digitalRead(inputPin1) == LOW) {
+    //         if (! musicPlayer.paused()) {
+    //             Serial.println("Paused");
+    //             musicPlayer.pausePlaying(true);
+    //         } 
+    //         else { 
+    //             Serial.println("Button 1 Pressed");
+    //             Serial.println("Resumed");
+    //             musicPlayer.pausePlaying(false);
+    //         }
+    //     }
+    // }
+    // if(digitalRead(inputPin2) == HIGH){
+    //     Serial.println("Button 2 Pressed");
+    //     buttonPressed = true;
+    // }
+    delay(100);
 }
