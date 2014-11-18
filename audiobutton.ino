@@ -143,7 +143,7 @@ void loop() {
         buttonPressed2 = true;
     }
     lastBtn2State = btnRead;
-**/
+    **/
 
 
 

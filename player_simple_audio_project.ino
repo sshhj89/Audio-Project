@@ -105,11 +105,7 @@ void loop() {
   if (musicPlayer.stopped()) {
     Serial.println("Done playing music");
     while (1);
-  }
-  
-  
-   
-    
+  }    
     
   if (Serial.available()) {
     char c = Serial.read();
