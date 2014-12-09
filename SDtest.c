@@ -2,6 +2,8 @@
 
 File root;
 File entry;
+int count; 
+
 
 void setup()
 {
@@ -24,25 +26,65 @@ void setup()
     }
     Serial.println("initialization done.");
 
+    //reopens the root file for each op to avoid a bug indicating there are no more files to read.
+    //http://stackoverflow.com/questions/16971084/how-to-recheck-file-in-arduino-sd-card
     root = SD.open("/");
+    if(root) {
+        countFiles(root);
+        root.close();
+    }
+    else {
+        Serial.println("Failed to open directory");
+    }
 
-    printDirectory(root);
-
-    Serial.println("done!");
+    root = SD.open("/");
+    if(root) {
+        writeDirectory(root);        
+        root.close();
+    }
+    else {
+        Serial.println("Failed to open directory");
+    }
 }
 
 void loop()
 {
     // nothing happens after setup finishes.
 }
-
-void printDirectory(File dir) {
+void countFiles(File dir) {
+    Serial.println("Counting files...");
     while(true) {
      
         entry =  dir.openNextFile();
         if (!entry) {
             // no more files
-            Serial.println("**no more files**");
+            Serial.println("No more files to count.");
+            break;
+        }
+            if (entry.isDirectory()) {
+            // Serial.print("is a Dir");
+            //do nothing
+        } else if (entry.size() != 0){
+            // files have sizes, directories do not
+            // Serial.print("found a file");
+            // Serial.print(entry.name());
+            // Serial.print("\n");
+            count++;
+            Serial.println(count);
+            Serial.print("\n");
+            // Serial.println(entry.size(), DEC);
+        }
+        // entry.close();
+    }
+}
+
+void writeDirectory(File dir) {
+    Serial.println("Writing files...");
+    while(true) {
+        entry =  dir.openNextFile();
+        if (!entry) {
+            // no more files
+            Serial.println("No more files to write.");
             break;
         }
             if (entry.isDirectory()) {
@@ -57,4 +99,5 @@ void printDirectory(File dir) {
         }
         entry.close();
     }
+
 }
