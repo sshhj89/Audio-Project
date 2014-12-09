@@ -16,9 +16,9 @@ void setup()
     // Note that even if it's not used as the CS pin, the hardware SS pin 
     // (10 on most Arduino boards, 53 on the Mega) must be left as an output 
     // or the SD library functions will not work. 
-    pinMode(10, OUTPUT);
+    pinMode(4, OUTPUT);
 
-    if (!SD.begin(10)) {
+    if (!SD.begin(4)) {
         Serial.println("initialization failed!");
         return;
     }
@@ -26,7 +26,7 @@ void setup()
 
     root = SD.open("/");
 
-    printDirectory(root, 0);
+    printDirectory(root);
 
     Serial.println("done!");
 }
@@ -36,23 +36,25 @@ void loop()
     // nothing happens after setup finishes.
 }
 
-void printDirectory(File dir, int numTabs) {
+void printDirectory(File dir) {
     while(true) {
      
         entry =  dir.openNextFile();
-        if (! entry) {
+        if (!entry) {
             // no more files
-            //Serial.println("**nomorefiles**");
+            Serial.println("**no more files**");
             break;
         }
-    }
-        Serial.print(entry.name());
-        if (entry.isDirectory()) {
+            if (entry.isDirectory()) {
+            // Serial.print("is a Dir");
             //do nothing
-        } else {
+        } else if (entry.size() != 0){
             // files have sizes, directories do not
-            Serial.print("\t\t");
-            Serial.println(entry.size(), DEC);
+            // Serial.print("found a file");
+            Serial.print(entry.name());
+            Serial.print("\n");
+            // Serial.println(entry.size(), DEC);
         }
         entry.close();
+    }
 }
