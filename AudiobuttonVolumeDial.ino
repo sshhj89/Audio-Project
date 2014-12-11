@@ -1,3 +1,7 @@
+
+//Ray Ortiz
+//Audio Project
+
 /*************************************************** 
   This is an example for the Adafruit VS1053 Codec Breakout
 
@@ -45,17 +49,17 @@ Adafruit_VS1053_FilePlayer musicPlayer =
  
  //initial setup of pins (buttons)
  
- int inputPin1 = 2;  
+ int inputPin1 = 2; // Digital pin assignment for push buttons
  int inputPin2 = 1;
  
- int potPin = 0;// Assignment for Potentiometer Dial
+ int potPin = 0;   // Analog pin assignment for Potentiometer Dial
  
  
  
  boolean buttonPressed1 = false;
  boolean buttonPressed2 = false;//boolean testing 
    
-  char *names[3]={"sample 1", "sample 2", "sample 3"};
+  char *names[3]={"sample 1", "sample 2", "sample 3"}; //hard coded music files
   char *files[3]={"sample1.mp3", "sample2.mp3", "sample3.mp3"};
   
   
@@ -104,7 +108,7 @@ void setup() {
    
     
     /*
-    Serial.print("Knob value ");
+    Serial.print("Knob value "); //Serial testing of dial output
     Serial.println(val);
     */
     
@@ -120,7 +124,8 @@ void loop() {
   
   int val = analogRead(potPin);// Analog read for dial. 0 to 1023.
   
-  musicPlayer.setVolume(val*100/1000,val*100/1000);//Volume set up will be constant depending on the dials' current postion while a song plays.
+  musicPlayer.setVolume(val*100/1000,val*100/1000);
+  //Volume set up will be constant depending on the dials' current postion while a song plays.
   
   
   if (musicPlayer.stopped()) {
@@ -129,7 +134,7 @@ void loop() {
   }
   
   
- 
+    // Serial Port Testing
     Serial.print("Button1 input ");
     Serial.println( digitalRead(inputPin1));
     Serial.print("Button2 input ");
