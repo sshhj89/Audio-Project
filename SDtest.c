@@ -37,6 +37,8 @@ void setup()
         Serial.println("Failed to open directory");
     }
 
+    char *filesArr[count]; //***NOT DECLARED IN THE RIGHT PLACE?****
+
     root = SD.open("/");
     if(root) {
         writeDirectory(root);        
@@ -62,42 +64,37 @@ void countFiles(File dir) {
             break;
         }
             if (entry.isDirectory()) {
-            // Serial.print("is a Dir");
+            //Serial.print("is a Dir");
             //do nothing
         } else if (entry.size() != 0){
             // files have sizes, directories do not
-            // Serial.print("found a file");
-            // Serial.print(entry.name());
-            // Serial.print("\n");
             count++;
             Serial.println(count);
             Serial.print("\n");
-            // Serial.println(entry.size(), DEC);
         }
-        // entry.close();
     }
 }
 
 void writeDirectory(File dir) {
     Serial.println("Writing files...");
     while(true) {
-        entry =  dir.openNextFile();
-        if (!entry) {
-            // no more files
-            Serial.println("No more files to write.");
-            break;
+            for(int i = 0; i <= count; i++){
+            entry =  dir.openNextFile();
+            if (!entry) {
+                // no more files
+                Serial.println("No more files to write.");
+                break;
+            }
+                if (entry.isDirectory()) {
+                // Serial.print("is a Dir");
+                //do nothing
+            } else if (entry.size() != 0){
+                // files have sizes, directories do not
+                Serial.print(entry.name());
+                filesArr[i] = entry.name();
+                Serial.print("\n");
+            }
+            entry.close();
         }
-            if (entry.isDirectory()) {
-            // Serial.print("is a Dir");
-            //do nothing
-        } else if (entry.size() != 0){
-            // files have sizes, directories do not
-            // Serial.print("found a file");
-            Serial.print(entry.name());
-            Serial.print("\n");
-            // Serial.println(entry.size(), DEC);
-        }
-        entry.close();
     }
-
 }
