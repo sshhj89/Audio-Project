@@ -106,6 +106,9 @@ void setup() {
     while (! musicPlayer.stopped() ){
     loop();
    
+    int val = analogRead(potPin);// Analog read for dial. 0 to 1023.
+    musicPlayer.setVolume(val*100/1000,val*100/1000); 
+    //Volume set up will be constant depending on the dials' current postion while a song plays
     
     /*
     Serial.print("Knob value "); //Serial testing of dial output
@@ -121,12 +124,7 @@ void setup() {
 //button calling
 void loop() {
   // File is playing in the background
-  
-  int val = analogRead(potPin);// Analog read for dial. 0 to 1023.
-  
-  musicPlayer.setVolume(val*100/1000,val*100/1000);
-  //Volume set up will be constant depending on the dials' current postion while a song plays.
-  
+
   
   if (musicPlayer.stopped()) {
     Serial.println("Done playing music");
