@@ -59,8 +59,8 @@ Adafruit_VS1053_FilePlayer musicPlayer =
  boolean buttonPressed1 = false;
  boolean buttonPressed2 = false;//boolean testing 
    
-  char *names[3]={"sample 1", "sample 2", "sample 3"}; //hard coded music files
-  char *files[3]={"sample1.mp3", "sample2.mp3", "sample3.mp3"};
+  char *names[5]={"sample 1", "sample 2", "sample 3", "16MB", "192kbps"}; //hard coded music files
+  char *files[5]={"sample1.mp3", "sample2.mp3", "sample3.mp3", "16MB.mp3", "192kbps.mp3"};
   
   
 void setup() {
@@ -95,7 +95,7 @@ void setup() {
   
   int count = 0;
   
-  while (count < 3){
+  while (count < 5){
     
     Serial.print("Playing ");
     Serial.println(names[count]);

@@ -4,7 +4,6 @@ File root;
 File entry;
 int count; 
 
-
 void setup()
 {
     // Open serial communications and wait for port to open:
@@ -29,15 +28,15 @@ void setup()
     //reopens the root file for each op to avoid a bug indicating there are no more files to read.
     //http://stackoverflow.com/questions/16971084/how-to-recheck-file-in-arduino-sd-card
     root = SD.open("/");
-    if(root) {
-        countFiles(root);
-        root.close();
-    }
-    else {
-        Serial.println("Failed to open directory");
-    }
+    // if(root) {
+    //     countFiles(root);
+    //     root.close();
+    // }
+    // else {
+    //     Serial.println("Failed to open directory");
+    // }
 
-    char *filesArr[count]; //***NOT DECLARED IN THE RIGHT PLACE?****
+    // char *filesArr[count]; //***NOT DECLARED IN THE RIGHT PLACE?****
 
     root = SD.open("/");
     if(root) {
@@ -53,7 +52,7 @@ void loop()
 {
     // nothing happens after setup finishes.
 }
-void countFiles(File dir) {
+int countFiles(File dir) {
     Serial.println("Counting files...");
     while(true) {
      
@@ -76,25 +75,100 @@ void countFiles(File dir) {
 }
 
 void writeDirectory(File dir) {
+    countFiles(root);
+    // root.close();
+
+    char *filesArr[count]; //***NOT DECLARED IN THE RIGHT PLACE?****
     Serial.println("Writing files...");
-    while(true) {
-            for(int i = 0; i <= count; i++){
+    // while(true) {
+        for(int i = 0; i <= count; i++){
+            Serial.println(root); //returns 1?
             entry =  dir.openNextFile();
+            Serial.println(entry); //returns 0? 
             if (!entry) {
                 // no more files
                 Serial.println("No more files to write.");
+                Serial.println(*filesArr);
+                // Serial.println(&filesArr[i]);
                 break;
             }
-                if (entry.isDirectory()) {
-                // Serial.print("is a Dir");
+            else if (entry.isDirectory()) {
+                Serial.print("is a Dir");
                 //do nothing
             } else if (entry.size() != 0){
-                // files have sizes, directories do not
+                // files have sizes - directories do not
                 Serial.print(entry.name());
                 filesArr[i] = entry.name();
                 Serial.print("\n");
             }
+            else{
+                Serial.print("got to the end ");
+            }
             entry.close();
         }
-    }
+        entry.close();
+    // }
 }
+/*
+Initializing SD card...initialization done.
+Counting files...
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+No more files to count.
+Writing files...
+1
+0
+No more files to write.
+
+1
+0
+No more files to write.
+
+1
+0
+No more files to write.
+
+1
+0
+No more files to write.
+
+1
+0
+No more files to write.
+
+1
+0
+
+*/
+
+/* without While loop
+Initializing SD card...initialization done.
+Counting files...
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+No more files to count.
+Writing files...
+1
+0
+No more files to write.
+*/
