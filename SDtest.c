@@ -76,40 +76,54 @@ int countFiles(File dir) {
 
 void writeDirectory(File dir) {
     countFiles(root);
-    // root.close();
+    root.close();
 
-    char *filesArr[count]; //***NOT DECLARED IN THE RIGHT PLACE?****
+    root = SD.open("/");
+
+    String *filesArr[count]; 
+
     Serial.println("Writing files...");
     // while(true) {
-        for(int i = 0; i <= count; i++){
-            Serial.println(root); //returns 1?
+        for(int i = 0; i < count; i++){
+            // Serial.println(root); //returns 1?
             entry =  dir.openNextFile();
-            Serial.println(entry); //returns 0? 
-            if (!entry) {
-                // no more files
-                Serial.println("No more files to write.");
-                Serial.println(*filesArr);
-                // Serial.println(&filesArr[i]);
-                break;
-            }
-            else if (entry.isDirectory()) {
+            // Serial.println(entry); //returns 0? 
+            // if (!entry) {
+            //     // no more files
+            //     Serial.println("No more files to write.");
+            //     Serial.println(filesArr[i]);
+            //     break;
+            // }
+            // else 
+            if (entry.isDirectory()) {
                 Serial.print("is a Dir");
                 //do nothing
             } else if (entry.size() != 0){
                 // files have sizes - directories do not
+                Serial.print("Entry: ");
                 Serial.print(entry.name());
-                filesArr[i] = entry.name();
+                Serial.print("\n");
+                Serial.print("File Arr:  ");
+                *filesArr[i] = entry.name();
+                Serial.print(*filesArr[i]);
                 Serial.print("\n");
             }
-            else{
-                Serial.print("got to the end ");
-            }
+            // else{
+            //     Serial.print("got to the end ");
+            // }
             entry.close();
         }
         entry.close();
     // }
+    Serial.print("Final Files Array: \n");
+    for(int t = 0; t < count; t++){
+        Serial.print(t);
+        Serial.print("\n");
+        Serial.print(*filesArr[t]);
+        Serial.print("\n");
+    }
 }
-/*
+/*FINAL FILES ARRAY PRINTS GARBAGE AFTER SECOND ELEMENT....
 Initializing SD card...initialization done.
 Counting files...
 1
@@ -118,57 +132,23 @@ Counting files...
 
 3
 
-4
-
-5
-
-6
-
 No more files to count.
 Writing files...
 1
-0
-No more files to write.
-
 1
-0
-No more files to write.
-
+Entry: SAMPLE1.MP3
+File Arr:  SAMPLE1.MP3
 1
-0
-No more files to write.
-
 1
-0
-No more files to write.
-
+Entry: SAMPLE2.MP3
+File Arr:  SAMPLE2.MP3
 1
-0
-No more files to write.
-
 1
+Entry: SAMPLE1.MP3
+File Arr:  SAMPLE1.MP3
+Final Files Array: 
 0
-
-*/
-
-/* without While loop
-Initializing SD card...initialization done.
-Counting files...
+SAMPLE1.MP3
 1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-No more files to count.
-Writing files...
-1
-0
-No more files to write.
+SAMPLE2.MP3<<GARBAGE HERE>>
 */
