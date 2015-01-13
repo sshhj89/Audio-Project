@@ -27,7 +27,7 @@
 //  out -> m+
 //  vcc -> 5
 //  gnd -> gnd
-
+//  need 2A - 12V adapter.
 #include <SPI.h>
 #include <Adafruit_VS1053.h>
 #include <SD.h>
