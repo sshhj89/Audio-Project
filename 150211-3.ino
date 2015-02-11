@@ -138,7 +138,6 @@ void loop() {
              delay(80);
              if(countForwardButton > 10)
              { 
-                 
                   if(musicPlayer.currentTrack.position() <= 0 || musicPlayer.currentTrack.size() == 0)
                   {  
                       delay(1000);
@@ -191,7 +190,9 @@ void loop() {
                            info.initCurrentFileIndex();
                       }
                       else
+                      {
                          info.setCurrentFileIndex(info.getCurrentFileIndex()-2);
+                      }
                       break;
                   }
                   
@@ -222,8 +223,6 @@ void loop() {
          }
          else
             info.setCurrentFileIndex(info.getCurrentFileIndex()-2);
-         
-        
          break;
        }
        
