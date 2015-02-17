@@ -13,6 +13,7 @@
    Mimumsize of file name is 5 and maximum is 12.
    So you can store files between 69 and 167. (835 / 5 ~ 835 / 12)
    It is simple calculation.
+   But I don't know the reason why 16 bytes is used when I try to record and store it.
 */
 
 // ********************  error handling ************************* //
